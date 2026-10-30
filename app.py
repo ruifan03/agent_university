@@ -59,6 +59,7 @@ if 'agent' not in st.session_state:
 
 data_path = get_abs_path(chroma_conf['data_path'])
 os.makedirs(data_path, exist_ok=True)
+map_path = get_abs_path('map')
 
 def knowledge_file_signature():
     return tuple(
@@ -82,6 +83,31 @@ if st.session_state.get('knowledge_file_signature') != current_signature:
     st.session_state['knowledge_file_signature'] = knowledge_file_signature()
 
 with st.sidebar:
+    with st.expander('🗺️ 校区地图查询', expanded=False):
+        map_files = sorted(
+            file_name
+            for file_name in os.listdir(map_path)
+            if file_name.lower().endswith(('.png', '.jpg', '.jpeg', '.webp'))
+        ) if os.path.isdir(map_path) else []
+
+        if map_files:
+            map_names = {
+                os.path.splitext(file_name)[0]: file_name
+                for file_name in map_files
+            }
+            selected_map = st.selectbox(
+                '选择校区',
+                options=list(map_names),
+                key='selected_campus_map',
+            )
+            st.image(
+                os.path.join(map_path, map_names[selected_map]),
+                caption=selected_map,
+                use_container_width=True,
+            )
+        else:
+            st.info('暂未找到校区地图。')
+
     with st.expander('📚 知识库管理', expanded=True):
         st.caption('上传或删除资料后，系统会自动同步向量库。')
         uploaded_documents = st.file_uploader(
@@ -209,7 +235,7 @@ if chat_input:
         uploaded_image = chat_input.files[0] if chat_input.files else None
 
     if not prompt and uploaded_image:
-        prompt = '请描述这张图片，并回答其中与山东大学相关的问题。'
+        prompt = '请描述这张图片，并回答其中的问题。'
     if not prompt:
         st.warning('请输入问题，或上传图片后再提交。')
         st.stop()

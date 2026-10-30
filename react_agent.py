@@ -1,5 +1,6 @@
 
 from langchain.agents import create_agent
+from langchain_core.messages import AIMessage
 from model.factory import chat_model
 from utils.prompt_loader import load_system_prompt
 from tools.agent_tools import rag_summarize, fill_context_for_report 
@@ -39,22 +40,38 @@ class ReactAgent:
             }
         }
 
-        for chunk in self.agent.stream(input_dict, 
-                                       config=config, 
-                                       stream_mode="values", 
-                                       context={'report': False}):
-            lastest_message = chunk['messages'][-1]
-            content = lastest_message.content
-            if isinstance(content, str) and content.strip():
-                yield content.strip() + '\n'
+        emitted_messages = set()
+        for chunk in self.agent.stream(
+            input_dict,
+            config=config,
+            stream_mode="values",
+            context={'report': False},
+        ):
+            latest_message = chunk['messages'][-1]
+            if not isinstance(latest_message, AIMessage):
+                continue
+            if latest_message.tool_calls:
+                continue
+
+            content = latest_message.content
+            if isinstance(content, str):
+                text = content.strip()
             elif isinstance(content, list):
                 text = ''.join(
                     item.get('text', '')
                     for item in content
                     if isinstance(item, dict) and item.get('type') == 'text'
                 ).strip()
-                if text:
-                    yield text + '\n'
+            else:
+                text = ''
+
+            message_key = (
+                getattr(latest_message, 'id', None),
+                text,
+            )
+            if text and message_key not in emitted_messages:
+                emitted_messages.add(message_key)
+                yield text + '\n'
                 
 
 if __name__ == '__main__':
@@ -65,7 +82,6 @@ if __name__ == '__main__':
 
     for chunk in agent.execute_stream('我现在有个创新创业国赛的奖励，可以获得学分吗', thread_id='001'):
             print(chunk, end='', flush=True)
-
 
 
 
