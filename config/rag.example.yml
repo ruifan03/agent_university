@@ -1,0 +1,7 @@
+chat_model_name: deepseek-flash
+embedding_model_name: text-embedding-v4
+
+DEEPSEEK_API_KEY: your_deepseek_api_key
+DEEPSEEK_BASE_URL: "https://api.deepseek.com"
+
+DASHSCOPE_API_KEY: your_dashscope_api_key

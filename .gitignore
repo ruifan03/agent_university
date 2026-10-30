@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Local configuration containing API keys
+config/rag.yml
+
+# Local vector database
+chroma_db/
+
+# Local knowledge-base documents
+data/
+
+# Logs and runtime data
+logs/
+*.log
+md5.text
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
