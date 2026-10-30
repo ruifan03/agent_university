@@ -2,7 +2,9 @@
 # 关于嵌入向量库
 collection_name: agent
 persist_directory: chroma_db
-k: 3
+k: 5
+# Only retrieved chunks at or above this relevance score are used.
+min_relevance_score: 0.5
 data_path: data
 md5_hex_store: md5.text
 allow_knowledge_file_type: ['txt', 'pdf']
@@ -11,7 +13,6 @@ allow_knowledge_file_type: ['txt', 'pdf']
 chunk_size: 200
 chunk_overlap: 20
 separators: ['\n\n', '\n','。','？','！','.','?',' ','']
-
 
 
 

@@ -117,16 +117,38 @@ with st.sidebar:
         if knowledge_files:
             for file_name in knowledge_files:
                 file_path = os.path.join(data_path, file_name)
-                file_col, delete_col = st.columns([5, 1])
+                file_col, delete_col = st.columns([4, 2])
                 file_col.caption(file_name)
-                if delete_col.button('删', key=f'delete_{file_name}'):
-                    os.remove(file_path)
-                    st.session_state['knowledge_sync_result'] = (
-                        knowledge_rag.vector_store.sync_documents()
-                    )
-                    st.session_state['knowledge_file_signature'] = (
-                        knowledge_file_signature()
-                    )
+                pending_delete = st.session_state.get('pending_delete')
+                if pending_delete == file_name:
+                    delete_col.warning('确定删除？')
+                    confirm_col, cancel_col = st.columns(2)
+                    if confirm_col.button(
+                        '确认',
+                        key=f'confirm_delete_{file_name}',
+                        type='primary',
+                    ):
+                        if os.path.exists(file_path):
+                            os.remove(file_path)
+                        st.session_state.pop('pending_delete', None)
+                        st.session_state['knowledge_sync_result'] = (
+                            knowledge_rag.vector_store.sync_documents()
+                        )
+                        st.session_state['knowledge_file_signature'] = (
+                            knowledge_file_signature()
+                        )
+                        st.rerun()
+                    if cancel_col.button(
+                        '取消',
+                        key=f'cancel_delete_{file_name}',
+                    ):
+                        st.session_state.pop('pending_delete', None)
+                        st.rerun()
+                elif delete_col.button(
+                    '删除',
+                    key=f'delete_{file_name}',
+                ):
+                    st.session_state['pending_delete'] = file_name
                     st.rerun()
         else:
             st.info('还没有资料。上传 TXT 或 PDF 后即可建立知识库。')
