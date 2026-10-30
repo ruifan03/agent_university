@@ -40,7 +40,14 @@ def log_before_model(
     logger.info(f"[log_before_model]即将调用模型，带有{len(state['messages'])}条消息。")
 
     # 想要打印出来消息的内容一定要debug级别才可以做到  -- 消息每次都是累加上的，所以打印最后一条就可以了
-    logger.debug(f"[log_before_model] {type(state['messages'][-1]).__name__} | {state['messages'][-1].content.strip()}")
+    message_content = state['messages'][-1].content
+    if isinstance(message_content, str):
+        log_content = message_content.strip()
+    else:
+        log_content = '[multimodal content]'
+    logger.debug(
+        f"[log_before_model] {type(state['messages'][-1]).__name__} | {log_content}"
+    )
 
     # return None
 
@@ -54,7 +61,6 @@ def report_prompt_switch(request):  # 动态切换提示词
     return load_system_prompt()
 
     # 问题切换后还可以换回来吗？
-
 
 
 

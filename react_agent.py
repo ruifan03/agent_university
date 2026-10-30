@@ -18,10 +18,18 @@ class ReactAgent:
             checkpointer=self.checkpointer,
         )
 
-    def execute_stream(self, query, thread_id=None):
+    def execute_stream(self, query, thread_id=None, image_data_url=None):
+        if image_data_url:
+            content = [
+                {'type': 'text', 'text': query},
+                {'type': 'image_url', 'image_url': {'url': image_data_url}},
+            ]
+        else:
+            content = query
+
         input_dict = {
             'messages' : [
-                {'role': 'user', 'content': query},
+                {'role': 'user', 'content': content},
             ]
         }
 
@@ -36,8 +44,17 @@ class ReactAgent:
                                        stream_mode="values", 
                                        context={'report': False}):
             lastest_message = chunk['messages'][-1]
-            if lastest_message.content:
-                yield lastest_message.content.strip() + '\n'
+            content = lastest_message.content
+            if isinstance(content, str) and content.strip():
+                yield content.strip() + '\n'
+            elif isinstance(content, list):
+                text = ''.join(
+                    item.get('text', '')
+                    for item in content
+                    if isinstance(item, dict) and item.get('type') == 'text'
+                ).strip()
+                if text:
+                    yield text + '\n'
                 
 
 if __name__ == '__main__':
@@ -48,7 +65,6 @@ if __name__ == '__main__':
 
     for chunk in agent.execute_stream('我现在有个创新创业国赛的奖励，可以获得学分吗', thread_id='001'):
             print(chunk, end='', flush=True)
-
 
 
 
