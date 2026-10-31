@@ -76,7 +76,7 @@ if __name__ == "__main__":
 
 
 # 如果想要测试
-# cd D:\01\ai\python\rag-gsg\agent
+# cd D:\01\ai\python\rag-gsg\agent_university
 # python -m rag.rag_service
 
 
