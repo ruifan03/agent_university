@@ -13,6 +13,9 @@ env/
 .env.*
 !.env.example
 
+#
+pingce/
+
 # Local configuration containing API keys
 config/rag.yml
 

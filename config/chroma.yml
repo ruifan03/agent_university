@@ -2,9 +2,16 @@
 # 关于嵌入向量库
 collection_name: agent
 persist_directory: chroma_db
-k: 5
+k: 8
 # Only retrieved chunks at or above this relevance score are used.
-min_relevance_score: 0.5
+min_relevance_score: 0.3
+# Combine lexical matches with vector similarity for exact names, numbers, and
+# short structured queries.
+keyword_search_enabled: true
+keyword_weight: 0.4
+keyword_candidate_limit: 20
+# Rewrite the user's question before vector retrieval.
+query_rewrite_enabled: false
 data_path: data
 md5_hex_store: md5.text
 allow_knowledge_file_type: ['txt', 'pdf']
@@ -13,7 +20,3 @@ allow_knowledge_file_type: ['txt', 'pdf']
 chunk_size: 200
 chunk_overlap: 20
 separators: ['\n\n', '\n','。','？','！','.','?',' ','']
-
-
-
-
