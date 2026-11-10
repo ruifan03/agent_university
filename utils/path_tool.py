@@ -3,11 +3,9 @@
 import os 
 
 def get_project_root():
-    # 获取工程所在的根目录
-    # 返回的是一个字符串
 
-    current_file = os.path.abspath(__file__) # 获取到了当前文件的绝对路径
-    current_dir = os.path.dirname(current_file) # 获取到了输入文件的上一级的文件夹的绝对路径
+    current_file = os.path.abspath(__file__) 
+    current_dir = os.path.dirname(current_file) 
     project_root = os.path.dirname(current_dir)
 
     return project_root
@@ -25,12 +23,5 @@ def get_abs_path(relative_path):
 # print('---------------------')
 # print(get_project_root())
 # print(get_abs_path('123/123'))
-
-
-
-
-
-
-
 
 
