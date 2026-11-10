@@ -14,9 +14,9 @@ from utils.path_tool import get_abs_path
 
 class RagSummarizeService:
     def __init__(self):
-        self.vector_store = VectorStoreService() # 向量存储
-        self.prompt_text = load_rag_prompt() # RAG总结提示词
-        self.prompt_template = PromptTemplate.from_template(self.prompt_text) # 提示词模板
+        self.vector_store = VectorStoreService() 
+        self.prompt_text = load_rag_prompt()
+        self.prompt_template = PromptTemplate.from_template(self.prompt_text)
         self.model = chat_model
         self._keyword_documents = None
         self.query_rewrite_chain = self.__init_query_rewrite_chain()
@@ -192,9 +192,7 @@ class RagSummarizeService:
         return f'{answer.strip()}\n\n【参考来源】\n{sources}'
 
 
-if __name__ == "__main__":
-    rag = RagSummarizeService()
-    print(rag.rag_summarize('小户型适合哪些扫地机器人'))
+
 
 
 # 如果想要测试
