@@ -9,7 +9,7 @@ def load_rag_config(config_path = None, encoding = 'utf-8'):
         config_path = get_abs_path('config/rag.yml')
 
     with open(config_path, 'r', encoding= encoding) as f:
-        return yaml.load(f, Loader=yaml.FullLoader) # 文件里面的配置全量加载进去
+        return yaml.load(f, Loader=yaml.FullLoader)
 
 # 向量数据库
 def load_chroma_config(config_path = None, encoding = 'utf-8'):
